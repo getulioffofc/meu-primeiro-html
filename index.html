@@ -1,87 +1,165 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Site Simples</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const CalculadoraApp());
+}
+
+class CalculadoraApp extends StatelessWidget {
+  const CalculadoraApp({Key? key}) : super(key: key); // Adicionando o parâmetro 'key'
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Calculadora',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: const CalculadoraHome(), // Adicionando 'const'
+    );
+  }
+}
+
+class CalculadoraHome extends StatefulWidget {
+  const CalculadoraHome({Key? key}) : super(key: key); // Adicionando o parâmetro 'key'
+
+  @override
+  _CalculadoraHomeState createState() => _CalculadoraHomeState();
+}
+
+class _CalculadoraHomeState extends State<CalculadoraHome> {
+  String resultado = '0';
+  String operacao = '';
+  String numero1 = '';
+  String numero2 = '';
+  bool novaEntrada = false;
+
+  void botaoPressionado(String valor) {
+    setState(() {
+      if (valor == 'C') {
+        // Limpa todos os valores
+        resultado = '0';
+        operacao = '';
+        numero1 = '';
+        numero2 = '';
+        novaEntrada = false;
+      } else if (valor == '+' || valor == '-' || valor == '*' || valor == '/') {
+        // Define a operação e prepara para o próximo número
+        if (numero1.isEmpty) {
+          numero1 = resultado;
+        }
+        operacao = valor;
+        novaEntrada = true;
+      } else if (valor == '=') {
+        // Calcula o resultado
+        if (numero1.isNotEmpty && operacao.isNotEmpty && numero2.isNotEmpty) {
+          double n1 = double.tryParse(numero1) ?? 0;
+          double n2 = double.tryParse(numero2) ?? 0;
+          switch (operacao) {
+            case '+':
+              resultado = (n1 + n2).toString();
+              break;
+            case '-':
+              resultado = (n1 - n2).toString();
+              break;
+            case '*':
+              resultado = (n1 * n2).toString();
+              break;
+            case '/':
+              resultado = n2 != 0 ? (n1 / n2).toString() : 'Erro';
+              break;
+          }
+          numero1 = resultado;
+          numero2 = '';
+          operacao = '';
+          novaEntrada = true;
+        }
+      } else {
+        // Gerencia entrada de números
+        if (novaEntrada) {
+          resultado = valor;
+          novaEntrada = false;
+        } else {
+          resultado = resultado == '0' ? valor : resultado + valor;
         }
 
-        header {
-            background-color: #333;
-            color: white;
-            padding: 10px 0;
-            text-align: center;
+        if (operacao.isEmpty) {
+          numero1 = resultado; 
+        } else {
+          numero2 = resultado; 
         }
+      }
+    });
+  }
 
-        nav {
-            display: flex;
-            justify-content: center;
-            background-color: #444;
-        }
+  Widget criarBotao(String texto, Color cor) {
+    return Expanded(
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: cor,
+          padding: const EdgeInsets.all(20),
+        ),
+        onPressed: () => botaoPressionado(texto),
+        child: Text(
+          texto,
+          style: const TextStyle(fontSize: 24, color: Colors.white),
+        ),
+      ),
+    );
+  }
 
-        nav a {
-            color: white;
-            padding: 14px 20px;
-            text-decoration: none;
-            text-align: center;
-        }
-
-        nav a:hover {
-            background-color: #575757;
-        }
-
-        section {
-            padding: 20px;
-        }
-
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <h1>Bem-vindo ao Meu Site Simples!</h1>
-</header>
-
-<nav>
-    <a href="#home">Home</a>
-    <a href="#sobre">Sobre</a>
-    <a href="#contato">Contato</a>
-</nav>
-
-<section id="home">
-    <h2>Home</h2>
-    <p>Este é um site simples criado com HTML e CSS. Aqui você pode aprender a criar um site básico de forma rápida!</p>
-</section>
-
-<section id="sobre">
-    <h2>Sobre</h2>
-    <p>Este site foi criado como um exemplo de uma estrutura básica de site com HTML e CSS.</p>
-</section>
-
-<section id="contato">
-    <h2>Contato</h2>
-    <p>Você pode entrar em contato conosco pelo email: contato@meusite.com</p>
-</section>
-
-<footer>
-    <p>&copy; 2025 Meu Site Simples. Todos os direitos reservados. <br> Criado por Getúlio Fernandes.</p>
-</footer>
-
-</body>
-</html>
-
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Calculadora'),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Expanded(
+            child: Container(
+              alignment: Alignment.bottomRight,
+              padding: const EdgeInsets.all(20),
+              child: Text(
+                resultado,
+                style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          const Divider(height: 1, color: Colors.black),
+          Row(
+            children: [
+              criarBotao('7', Colors.blue),
+              criarBotao('8', Colors.blue),
+              criarBotao('9', Colors.blue),
+              criarBotao('/', Colors.orange),
+            ],
+          ),
+          Row(
+            children: [
+              criarBotao('4', Colors.blue),
+              criarBotao('5', Colors.blue),
+              criarBotao('6', Colors.blue),
+              criarBotao('*', Colors.orange),
+            ],
+          ),
+          Row(
+            children: [
+              criarBotao('1', Colors.blue),
+              criarBotao('2', Colors.blue),
+              criarBotao('3', Colors.blue),
+              criarBotao('-', Colors.orange),
+            ],
+          ),
+          Row(
+            children: [
+              criarBotao('C', Colors.red),
+              criarBotao('0', Colors.blue),
+              criarBotao('=', Colors.green),
+              criarBotao('+', Colors.orange),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
