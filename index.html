@@ -1,165 +1,38 @@
-import 'package:flutter/material.dart';
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
 
-void main() {
-  runApp(const CalculadoraApp());
-}
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
 
-class CalculadoraApp extends StatelessWidget {
-  const CalculadoraApp({Key? key}) : super(key: key); // Adicionando o parâmetro 'key'
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Calculadora',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const CalculadoraHome(), // Adicionando 'const'
-    );
-  }
-}
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+  <base href="app-calculadora">
 
-class CalculadoraHome extends StatefulWidget {
-  const CalculadoraHome({Key? key}) : super(key: key); // Adicionando o parâmetro 'key'
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="A new Flutter project.">
 
-  @override
-  _CalculadoraHomeState createState() => _CalculadoraHomeState();
-}
+  <!-- iOS meta tags & icons -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="myapp">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
-class _CalculadoraHomeState extends State<CalculadoraHome> {
-  String resultado = '0';
-  String operacao = '';
-  String numero1 = '';
-  String numero2 = '';
-  bool novaEntrada = false;
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="favicon.png"/>
 
-  void botaoPressionado(String valor) {
-    setState(() {
-      if (valor == 'C') {
-        // Limpa todos os valores
-        resultado = '0';
-        operacao = '';
-        numero1 = '';
-        numero2 = '';
-        novaEntrada = false;
-      } else if (valor == '+' || valor == '-' || valor == '*' || valor == '/') {
-        // Define a operação e prepara para o próximo número
-        if (numero1.isEmpty) {
-          numero1 = resultado;
-        }
-        operacao = valor;
-        novaEntrada = true;
-      } else if (valor == '=') {
-        // Calcula o resultado
-        if (numero1.isNotEmpty && operacao.isNotEmpty && numero2.isNotEmpty) {
-          double n1 = double.tryParse(numero1) ?? 0;
-          double n2 = double.tryParse(numero2) ?? 0;
-          switch (operacao) {
-            case '+':
-              resultado = (n1 + n2).toString();
-              break;
-            case '-':
-              resultado = (n1 - n2).toString();
-              break;
-            case '*':
-              resultado = (n1 * n2).toString();
-              break;
-            case '/':
-              resultado = n2 != 0 ? (n1 / n2).toString() : 'Erro';
-              break;
-          }
-          numero1 = resultado;
-          numero2 = '';
-          operacao = '';
-          novaEntrada = true;
-        }
-      } else {
-        // Gerencia entrada de números
-        if (novaEntrada) {
-          resultado = valor;
-          novaEntrada = false;
-        } else {
-          resultado = resultado == '0' ? valor : resultado + valor;
-        }
-
-        if (operacao.isEmpty) {
-          numero1 = resultado; 
-        } else {
-          numero2 = resultado; 
-        }
-      }
-    });
-  }
-
-  Widget criarBotao(String texto, Color cor) {
-    return Expanded(
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: cor,
-          padding: const EdgeInsets.all(20),
-        ),
-        onPressed: () => botaoPressionado(texto),
-        child: Text(
-          texto,
-          style: const TextStyle(fontSize: 24, color: Colors.white),
-        ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Calculadora'),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Expanded(
-            child: Container(
-              alignment: Alignment.bottomRight,
-              padding: const EdgeInsets.all(20),
-              child: Text(
-                resultado,
-                style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-          const Divider(height: 1, color: Colors.black),
-          Row(
-            children: [
-              criarBotao('7', Colors.blue),
-              criarBotao('8', Colors.blue),
-              criarBotao('9', Colors.blue),
-              criarBotao('/', Colors.orange),
-            ],
-          ),
-          Row(
-            children: [
-              criarBotao('4', Colors.blue),
-              criarBotao('5', Colors.blue),
-              criarBotao('6', Colors.blue),
-              criarBotao('*', Colors.orange),
-            ],
-          ),
-          Row(
-            children: [
-              criarBotao('1', Colors.blue),
-              criarBotao('2', Colors.blue),
-              criarBotao('3', Colors.blue),
-              criarBotao('-', Colors.orange),
-            ],
-          ),
-          Row(
-            children: [
-              criarBotao('C', Colors.red),
-              criarBotao('0', Colors.blue),
-              criarBotao('=', Colors.green),
-              criarBotao('+', Colors.orange),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
+  <title>myapp</title>
+  <link rel="manifest" href="manifest.json">
+</head>
+<body>
+  <script src="flutter_bootstrap.js" async></script>
+</body>
+</html>
